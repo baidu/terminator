@@ -26,6 +26,8 @@ Terminator —— Service Virtualization
 
 		Terminator中每个链路可以看成是一个代理，运行在两个服务之间，现在支持四种工作模式：
 
+![Function Summary](WebContent/resources/images/function-summary.jpg)
+
 TUNNEL：隧道模式，链路服务负责接收和转发链路上的数据，但不做任何存储，相当于通透状态;
 
 RECORD：录制模式，链路服务将链路上的请求和响应存储下来，并记录请求响应的对应关系;
@@ -36,7 +38,7 @@ STUB：通用桩模式，链路服务能够预设返回结果与匹配规则，�
 
 整体架构
 ----------
-![github](https://github.com/BaiduQA/terminator/blob/master/WebContent/resources/images/intro/architecture.png "github")  
+![Terminator Architecture](WebContent/resources/images/intro/architecture.png)
 
 1. 网络通信：主要在TCP层建立Socket收发链路上的通信数据，这里采用的是netty框架；
 
