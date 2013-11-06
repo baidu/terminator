@@ -51,16 +51,12 @@ STUB：通用桩模式，链路服务能够预设返回结果与匹配规则，�
 配置与部署
 ----------
 
-将terminator.war解压为terminator；
-
-将terminator/src/database/{version}/terminator.sql在MySQL数据库中执行，{version}为对应terminator.war的版本号；
-
-修改terminator/src/conf/configuration.properties中数据库配置；
-
-（可选操作）修改terminator/src/conf/configuration.properties中fileStorage.baseDir属性，这个是录制数据存放的位置，一般产生的数据较大，可以给定一个磁盘空间较大的位置。如果不填，默认情况window系统会存储在C:\temp，linux系统会存储在/tmp；
-将terminator放入任何一个servlet容器后启动，比如tomcat的webapps下；
-
-访问http://IP:Port/terminator。
+		将terminator.war解压为terminator；
+		将terminator/src/database/{version}/terminator.sql在MySQL数据库中执行，{version}为对应terminator.war的版本号；
+		修改terminator/src/conf/configuration.properties中数据库配置；
+		（可选操作）修改terminator/src/conf/configuration.properties中fileStorage.baseDir属性，这个是录制数据存放的位置，一般产生的数据较大，可以给定一个磁盘空间较大的位置。如果不填，默认情况window系统会存储在C:\temp，linux系统会存储在/tmp；
+		将terminator放入任何一个servlet容器后启动，比如tomcat的webapps下；
+		访问http://IP:Port/terminator。
 
 使用手册和开发指南
 ----------
