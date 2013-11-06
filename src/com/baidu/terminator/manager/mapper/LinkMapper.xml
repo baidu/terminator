@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baidu.terminator.manager.mapper.LinkMapper">
+
+	<resultMap id="LinkMap" type="com.baidu.terminator.manager.bo.Link">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="local_port" property="localPort" jdbcType="INTEGER" />
+		<result column="remote_address" property="remoteAddress"
+			jdbcType="VARCHAR" />
+		<result column="remote_port" property="remotePort" jdbcType="DECIMAL" />
+		<result column="work_mode" property="workMode" jdbcType="VARCHAR" />
+		<result column="protocol_type" property="protocolType"
+			jdbcType="VARCHAR" />
+		<result column="storage_type" property="storageType" jdbcType="VARCHAR" />
+		<result column="sign_class" property="signClass"
+			jdbcType="VARCHAR" />
+		<result column="extract_class" property="extractClass"
+			jdbcType="VARCHAR" />
+		<result column="work_status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectAllLink" resultMap="LinkMap">
+		select id, name,
+		local_port, remote_address, remote_port, work_mode, protocol_type,
+		storage_type, sign_class, extract_class, work_status from link where is_delete = 0
+	</select>
+
+	<select id="selectLinkById" resultMap="LinkMap">
+		select id, name,
+		local_port,
+		remote_address, remote_port, work_mode, protocol_type,
+		storage_type,
+		sign_class, extract_class, work_status from link where is_delete = 0 and id = #{id}
+	</select>
+	
+	<select id="selectLinkByName" resultMap="LinkMap">
+		select id, name,
+		local_port,
+		remote_address, remote_port, work_mode, protocol_type,
+		storage_type,
+		sign_class, extract_class, work_status from link where is_delete = 0 and name like #{id}
+	</select>
+	
+	<select id="countValidPort" resultType="java.lang.Integer">
+		select count(*) from link where local_port = #{port} and is_delete = 0
+	</select>
+
+	<insert id="insertLink" parameterType="com.baidu.terminator.manager.bo.Link"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into link (id, name,
+		local_port, remote_address, remote_port, work_mode, protocol_type,
+		storage_type, sign_class, extract_class) values
+		(#{id}, #{name}, #{localPort},
+		#{remoteAddress}, #{remotePort}, #{workMode},
+		#{protocolType},
+		#{storageType}, #{signClass}, #{extractClass})
+	</insert>
+
+	<update id="updateLink" parameterType="com.baidu.terminator.manager.bo.Link">
+		update link
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="localPort != null">
+				local_port = #{localPort},
+			</if>
+			<if test="remoteAddress != null">
+				remote_address = #{remoteAddress},
+			</if>
+			<if test="remotePort != null">
+				remote_port = #{remotePort},
+			</if>
+			<if test="workMode != null">
+				work_mode = #{workMode},
+			</if>
+			<if test="protocolType != null">
+				protocol_type = #{protocolType},
+			</if>
+			<if test="storageType != null">
+				storage_type = #{storageType},
+			</if>
+			<if test="signClass != null">
+				sign_class = #{signClass},
+			</if>
+			<if test="extractClass != null">
+				extract_class = #{extractClass},
+			</if>
+			<if test="status != null">
+				work_status = #{status},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="deleteLink">
+		update link set is_delete = 1 where id = #{id}
+	</update>
+
+</mapper>

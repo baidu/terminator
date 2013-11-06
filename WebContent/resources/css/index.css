@@ -1,0 +1,203 @@
+@CHARSET "UTF-8";
+
+body {
+	margin: 0;
+}
+
+div {
+	background-repeat: no-repeat;
+}
+
+.mainIndex {
+	position: absolute;
+	left: 210px;
+	top: 149px;
+	width: 1000px;
+}
+
+.logoContainer {
+	position: absolute;
+	left: 215px;
+	top: 10px;
+	width: 100px;
+	height: 70px;
+}
+
+.logoImg {
+	background-image: url('../images/index/logo.png');
+}
+
+#logoImg {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 201px;
+	height: 70px;
+}
+
+.terminator {
+	position: absolute;
+	left: 300px;
+	top: 23px;
+	width: 274px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.slogan {
+	position: absolute;
+	left: 300px;
+	top: 52px;
+	width: 282px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.version {
+	position: absolute;
+	left: 490px;
+	top: 10px;
+	width: 150px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.bannerContainer {
+	position: absolute;
+	left: -37px;
+	top: 90px;
+	width: 2569px;
+	height: 46px;
+}
+
+#bannerImage {
+	position: absolute;
+	left: -3px;
+	top: -3px;
+	width: 2575px;
+	height: 52px;
+}
+
+.bannerImage {
+	background-image: url('../images/index/banner.png');
+}
+
+.selectEffectImage {
+    background-image: url('../images/index/selectEffect.png');
+}
+
+#selectEffectImage {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:97px;
+    height:52px;
+}
+
+.selectEffect0 {
+    position:absolute;
+    left:210px;
+    top:90px;
+    width:101px;
+    height:46px;
+}
+
+.selectEffect1 {
+    position:absolute;
+    left:325px;
+    top:90px;
+    width:101px;
+    height:46px;
+}
+
+.selectEffect2 {
+    position:absolute;
+    left:440px;
+    top:90px;
+    width:101px;
+    height:46px;
+}
+
+.selectEffect3 {
+    position:absolute;
+    left:555px;
+    top:90px;
+    width:101px;
+    height:46px;
+}
+
+.selectEffect4 {
+    position:absolute;
+    left:685px;
+    top:90px;
+    width:101px;
+    height:46px;
+}
+
+.index {
+	position: absolute;
+	left: 238px;
+	top: 101px;
+	width: 109px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.start {
+	position: absolute;
+	left: 339px;
+	top: 101px;
+	width: 150px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.apis {
+	position: absolute;
+	left: 467px;
+	top: 101px;
+	width: 150px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.development {
+	position: absolute;
+	left: 567px;
+	top: 101px;
+	width: 161px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.feature {
+	position: absolute;
+	left: 697px;
+	top: 101px;
+	width: 161px;
+	height: 28px;
+	font-family: Arial;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.searchButton{
+	width:25px;
+	height:25px;
+	background:url(../images/index/search-icon.png) no-repeat;
+}
+

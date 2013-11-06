@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baidu.terminator.storage.file.mapper.DataIndexMapper">
+
+	<resultMap id="DataIndexMap"
+		type="com.baidu.terminator.storage.file.bo.DataIndex">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="link_id" property="linkId" jdbcType="INTEGER" />
+		<result column="offset" property="offset" jdbcType="BIGINT" />
+		<result column="signature" property="signature" jdbcType="VARCHAR" />
+		<result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectDataIndex" resultMap="DataIndexMap">
+		select id, link_id, offset, signature, add_time from data_index where link_id = #{linkId} and signature = #{signature} order by id desc limit 1
+	</select>
+
+	<select id="selectDataIndexIDs" resultMap="DataIndexMap">
+		select id from data_index where link_id = #{linkId}
+	</select>
+
+	<select id="selectDataIndexByID" resultMap="DataIndexMap">
+		select id, link_id, offset, signature, add_time from data_index where id = #{id}
+	</select>
+
+	<insert id="insertDataIndex" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into data_index (link_id, offset, signature, add_time) values (#{linkId}, #{offset}, #{signature}, #{addTime})
+	</insert>
+
+	<update id="updateDataIndexSign">
+		update data_index set signature = #{signature} where id = #{id}
+	</update>
+
+	<delete id="deleteDataIndex">
+		delete from data_index where link_id = #{linkId}
+	</delete>
+
+</mapper>

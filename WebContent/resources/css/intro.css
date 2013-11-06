@@ -1,0 +1,95 @@
+@charset "utf-8";
+/* CSS Document */
+.main {
+	position: absolute;
+	left: 210px;
+	top: 149px;
+	width: 1000px;
+}
+.stubsetDiv {
+	margin: 0 0 20px;
+}
+
+.us-sidebar {
+	float: left;
+	width: 200px;
+	overflow: hidden;
+	font: 14px/180% "微软雅黑";
+}
+
+.us-sidebar .menu dt {
+	padding: 5px 25px;
+	border: solid 1px #ccc;
+	background: url(../images/bg-about-dt-x.png) repeat-x top;
+	font-size: 16px;
+	color: #949494;
+}
+
+.us-sidebar .menu dd {
+	padding: 5px 10px;
+	border: solid 1px #ccc;
+	border-top-color: white;
+	background: #fcfcfc;
+}
+
+.us-sidebar .menu ul {
+	
+}
+
+.us-sidebar .menu li {
+	height: 35px;
+	padding: 0 10px;
+	border-bottom: dotted 1px #ccc;
+	line-height: 30px;
+}
+
+.us-sidebar .menu li.current {
+	background: url(../images/icon-current.png) no-repeat right center;
+	font-weight: bold;
+}
+
+.us-sidebar .menu li a {
+	color:#2383D0;
+}
+
+.us-sidebar .menu li.current a {
+	color: #2383D0;
+}
+
+.us-content {
+	margin-left: 220px !important;
+	margin-left: 207px;
+	font: 14px/200% "微软雅黑";
+	color: #666;
+}
+
+.us-content .banner {
+	padding-bottom: 10px;
+}
+
+.us-content .cont {
+	border: solid 1px #ddd;
+	padding: 10px;
+}
+
+.us-content h4{
+	font-family: 微软雅黑;
+	font-size: 16px;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+	color: #333333;
+}
+
+.us-content h5 {
+	font-family: 微软雅黑;
+	font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+	color: #333333;
+}
+
+.us-content p {
+	margin-bottom: 20px;
+}

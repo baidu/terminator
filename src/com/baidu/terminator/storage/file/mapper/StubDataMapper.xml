@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baidu.terminator.storage.file.mapper.StubDataMapper">
+
+	<resultMap id="StubDataMap" type="com.baidu.terminator.manager.bo.StubData">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="link_id" property="linkId" jdbcType="INTEGER" />
+		<result column="delay" property="delay" jdbcType="INTEGER" />
+		<result column="response" property="response" jdbcType="VARCHAR" />
+
+		<collection property="conditions" ofType="com.baidu.terminator.manager.bo.StubCondition">
+			<result column="stub_data_id" property="stubDataId" jdbcType="INTEGER" />
+			<result column="key" property="key" jdbcType="VARCHAR" />
+			<result column="value" property="value" jdbcType="VARCHAR" />
+			<result column="sequence" property="sequence" jdbcType="INTEGER" />
+			<result column="operator" property="operator" jdbcType="VARCHAR" />
+		</collection>
+	</resultMap>
+
+	<select id="selectStubData" resultMap="StubDataMap">
+		select A.id, A.link_id,
+		A.delay, A.response, B.stub_data_id, B.key, B.value, B.operator, B.sequence from
+		stub_data A, stub_condition B where link_id = #{linkId} and A.id =
+		B.stub_data_id
+	</select>
+
+	<insert id="insertStubData" useGeneratedKeys="true" keyProperty="id">
+		insert into stub_data (link_id, delay, response) values (#{linkId},
+		#{delay}, #{response})
+	</insert>
+
+	<insert id="insertStubCondition">
+		insert into stub_condition (stub_data_id, `key`, `value`,
+		operator, sequence) values (#{stubDataId}, #{key}, #{value},
+		#{operator}, #{sequence})
+	</insert>
+
+	<delete id="deleteStubData">
+		delete from stub_data where id = #{id}
+	</delete>
+
+	<delete id="deleteStubCondition">
+		delete from stub_condition where stub_data_id =
+		#{stubDataId}
+	</delete>
+
+</mapper>
