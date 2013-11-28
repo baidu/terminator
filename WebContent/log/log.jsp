@@ -44,6 +44,11 @@ pre {
 	$.ajaxSetup({cache:false});
 	baseUrl = '<%=request.getContextPath()%>';
 	linkId = '<%=request.getParameter("linkId")%>';
+	
+	$(document).ready(function() {
+		$.Mustache.addFromDom('log_template');
+		queryLog(linkId, 0);
+	});
 
 	function queryLog(linkId, offset) {
 		$('#spinner').slideDown();
@@ -51,12 +56,6 @@ pre {
 			type : "GET",
 			url : baseUrl + "/log/" + linkId + "/" + offset,
 			contentType : "application/json",
-			statusCode : {
-				500 : function(data){
-					$('#spinner').slideUp();
-					alert("日志文件没有生成！");
-				}
-			},
 			success : function(data, textStatus, jqXHR) {
 				$('#logLocation').html(data.logLocation)
 				for(var i in data.content){
@@ -71,17 +70,15 @@ pre {
 		            },
 		            3000
 			    );
-			}
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {
+	            alert(XMLHttpRequest.responseText);
+	        }
 		});
 	}
 	
-	$(document).ready(function() {
-		$.Mustache.addFromDom('log_template');
-		queryLog(linkId, 0);
-	});
-	
 	function clearLog(){
-		var comfirm = confirm('您确定要清空链路日志吗？');
+		var comfirm = confirm('Confirm to clear log related to this link?');
 		if(comfirm){
 			$.ajax({
 				type : "DELETE",
@@ -89,7 +86,7 @@ pre {
 				contentType : "application/json",
 				success : function(data, textStatus, jqXHR) {
 					$('#log').empty();
-					alert("链路"+ linkId+ "的日志已清空！");
+					alert("clear log success!");
 				},
 				error: function (XMLHttpRequest, textStatus, errorThrown) {
 		            alert(XMLHttpRequest.responseText);

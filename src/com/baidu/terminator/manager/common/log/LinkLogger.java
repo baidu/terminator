@@ -24,7 +24,7 @@ import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 import com.baidu.terminator.manager.common.Config;
 import com.baidu.terminator.manager.common.SpringInit;
-import com.baidu.terminator.storage.file.util.FileUtils;
+import com.baidu.terminator.manager.common.file.FileUtils;
 
 /**
  * 

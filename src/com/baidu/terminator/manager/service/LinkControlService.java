@@ -13,6 +13,8 @@ import com.baidu.terminator.manager.bo.WorkMode;
 import com.baidu.terminator.manager.common.exception.LinkStatusException;
 
 public interface LinkControlService {
+	
+	public void recoveryLink();
 
 	public void startServer(int linkId);
 

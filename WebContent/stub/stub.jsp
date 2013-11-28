@@ -11,8 +11,6 @@
 		<td>键<input type="text" name="key"/></td>
 		<td>值<input type="text" name="value"/></td>
 		<td><input type="button" onclick="deleteCondition({{conditionId}})" value="删除"/></td>
-		<input type="hidden" name="operator" value="and"/>
-		<input type="hidden" name="sequence" value="{{conditionId}}"/>
 	</tr>
 </script>
 
@@ -21,6 +19,7 @@
 		<tr>
 			<th>ID</th>
 			<th>匹配条件</th>
+			<th>匹配条件关系</th>
 			<th>预期返回</th>
 			<th>延时</th>
 			<th>操作</th>
@@ -34,6 +33,9 @@
 				{{key}} : {{value}}  <br>
 			{{/conditions}}
 		</td>
+		<td>
+			{{operator}}
+		</td>
 		<td>{{response}}</td>
 		<td>{{delay}}</td>
 		<td><a onclick="deleteStubData({{id}})">删除</a></td>
@@ -43,38 +45,42 @@
 
 <body>
 
-	<jsp:include page="/include/header.jsp" flush="true">
-		<jsp:param name="index" value="0" />
-	</jsp:include>
+<jsp:include page="/include/header.jsp" flush="true">
+	<jsp:param name="index" value="0" />
+</jsp:include>
 
-	<div class="main">
-		<div class="subnav">
-			<ul>
-				<li class="first current1">桩设置</li>
-			</ul>
-		</div>
-		
-		<div style="margin-bottom: 5px">匹配条件说明:</div>
-		<div style="margin-bottom: 5px;margin-top: 5px" id="message"></div>
+<div class="main">
+<div class="subnav">
+<ul>
+	<li class="first current1">桩设置</li>
+</ul>
+</div>
 
-		<div style="margin-bottom: 5px">匹配条件:</div>
+<div style="margin-bottom: 5px">匹配条件说明:</div>
+<div style="margin-bottom: 5px; margin-top: 5px" id="message"></div>
 
-		<input id="addCondition" type="button" onclick="addCondition()"
-			value="增加匹配条件" style="margin-bottom: 5px;margin-top: 5px"/>
-		<span id="conditionPrompt" style="display:none;color:red"></span>
-		<table id="addConditionTable" class="listtbl1" style="margin-bottom: 5px;margin-top: 5px">
-		</table>
+<div style="margin-bottom: 5px">匹配条件:</div>
 
-		<div style="margin-bottom: 5px;margin-top: 5px">预设返回:</div>
-		<textarea id="response" style="height: 100px; width: 382px"></textarea>
+<input id="addCondition" type="button" onclick="addCondition()"
+	value="增加匹配条件" style="margin-bottom: 5px; margin-top: 5px" /> <label>请选择匹配条件之间关系：</label>
+<input type="radio" name="operator_radio" value="and" checked="checked">AND
+<input type="radio" name="operator_radio" value="or">OR <input
+	type="radio" name="operator_radio" value="or">NOT <span
+	id="conditionPrompt" style="display: none; color: red"></span>
+<table id="addConditionTable" class="listtbl1"
+	style="margin-bottom: 5px; margin-top: 5px">
+</table>
+<input type="hidden" name="sequence" value=0 />
+<div style="margin-bottom: 5px; margin-top: 5px">预设返回:</div>
+<textarea id="response" style="height: 100px; width: 382px"></textarea>
 
-		<br> 
-		<input type="button" onclick="submitCondition()" value="提交" class="btn"/>
-		
-		<table id="listConditionTable" class="listtbl1" style="margin-top: 15px"></table>
-	</div>
+<br>
+<input type="button" onclick="submitCondition()" value="提交" class="btn" />
 
-	<script type="text/javascript">
+<table id="listConditionTable" class="listtbl1" style="margin-top: 15px"></table>
+</div>
+
+<script type="text/javascript">
 		$.ajaxSetup({cache:false});
 		baseUrl = "<%=request.getContextPath()%>"
 		linkId = "<%=request.getParameter("linkId")%>"
@@ -121,7 +127,7 @@
 
 		function addCondition() {
 			$('#addConditionTable').mustache("condition_submit_template", {
-				conditionId : ++conditionId,
+				conditionId : conditionId,
 			});
 		}
 
@@ -131,11 +137,9 @@
 
 		function submitCondition() {
 			// define Conditon Object
-			function Condition(key,value,operator,sequence){
+			function Condition(key,value){
 		        this.key = key;
 		        this.value = value;
-		        this.operator = operator;
-		        this.sequence = sequence;
 			}
 			
 			var trConditions = $('tr[name=condition]')
@@ -149,12 +153,19 @@
 			var conditions = [];
 			var keys = $('input[name=key]')
 			var values = $('input[name=value]')
-			var operators = $('input[name=operator]')
-			var sequences = $('input[name=sequence]')
+			var sequences = $('input[name=sequence]')[0].value;
 			var response = $('#response').val();
-
+			var operators = "and";
+			if($('input[name=operator_radio]')[0].checked == true){
+				operators = "and";
+			}else if($('input[name=operator_radio]')[1].checked == true){
+				operators = "or";
+			}else if($('input[name=operator_radio]')[2].checked == true){
+				operators = "not";
+			}
+				
 			for (var i = 0; i < keys.length; i++) {
-				var c = new Condition(keys[i].value,values[i].value,operators[i].value,sequences[i].value);
+				var c = new Condition(keys[i].value,values[i].value);
 				conditions.push(c);
 			}
 			
@@ -164,6 +175,8 @@
 				contentType : "application/json;charset=utf-8",
 				data : JSON.stringify({
 					"conditions" : conditions,
+					"operator" : operators,
+					"sequence" : sequences,
 					"response" : response,
 				}),
 				success : function(data, textStatus, jqXHR) {

@@ -5,16 +5,15 @@ import java.util.List;
 import com.baidu.terminator.manager.bo.StubCondition;
 import com.baidu.terminator.plugin.extractor.RequestElement;
 
-public class AndRequestMatcher implements RequestMatcher {
+public class NotRequestMatcher implements RequestMatcher {
 
 	@Override
 	public boolean isMatch(List<StubCondition> conditions,
 			List<RequestElement> elements) {
 		int i = 0;
+		boolean isMatch = false;
 		for (; i < conditions.size(); i++) {
 			StubCondition condition = conditions.get(i);
-
-			boolean isMatch = false;
 			for (RequestElement re : elements) {
 				if (condition.getKey().equals(re.getKey())
 						&& condition.getValue().equals(re.getValue())) {
@@ -22,13 +21,11 @@ public class AndRequestMatcher implements RequestMatcher {
 					break;
 				}
 			}
-
-			if (!isMatch) {
+			if (isMatch) {
 				break;
 			}
 		}
-
-		return conditions.size() == i;
+		return !isMatch;
 	}
 
 }

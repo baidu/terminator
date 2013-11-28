@@ -18,7 +18,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import com.baidu.terminator.manager.bo.Link;
@@ -36,7 +35,7 @@ import com.baidu.terminator.storage.StorageFactory;
 
 @Service("linkControlService")
 public class LinkControlServiceImpl implements LinkControlService,
-		InitializingBean, DisposableBean {
+		DisposableBean {
 
 	@Resource(name = "linkService")
 	private LinkService linkService;
@@ -50,6 +49,16 @@ public class LinkControlServiceImpl implements LinkControlService,
 	private Map<Integer, Server> linkIdServerMap = new ConcurrentHashMap<Integer, Server>();
 
 	private Map<Integer, Link> linkIdLinkMap = new ConcurrentHashMap<Integer, Link>();
+
+	@Override
+	public void recoveryLink() {
+		List<Link> allLink = linkService.getAllLink();
+		for (Link link : allLink) {
+			if (ServerStatus.running == link.getStatus()) {
+				startServer(link.getId());
+			}
+		}
+	}
 
 	@Override
 	public void startServer(int linkId) {
@@ -96,15 +105,6 @@ public class LinkControlServiceImpl implements LinkControlService,
 			linkService.modifyLink(link);
 		} else {
 			throw new LinkStatusException("Need_Link_Start_Up");
-		}
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		List<Link> allLink = linkService.getAllLink();
-		for (Link link : allLink) {
-			link.setStatus(ServerStatus.stopped);
-			linkService.modifyLink(link);
 		}
 	}
 

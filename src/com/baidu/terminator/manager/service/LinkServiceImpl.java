@@ -8,6 +8,8 @@
  */
 package com.baidu.terminator.manager.service;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.List;
 import java.util.Set;
 
@@ -16,8 +18,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.baidu.terminator.manager.bo.PluginInfo;
 import com.baidu.terminator.manager.bo.Link;
+import com.baidu.terminator.manager.bo.PluginInfo;
 import com.baidu.terminator.manager.mapper.LinkMapper;
 import com.baidu.terminator.register.ProtocolRegister;
 
@@ -52,9 +54,12 @@ public class LinkServiceImpl implements LinkService {
 	}
 
 	@Override
-	public int addLink(Link link) {
+	public void addLink(Link link) {
+		if (link.getLocalPort() == null) {
+			link.setLocalPort(distributeLocalPort());
+		}
+
 		linkMapper.insertLink(link);
-		return link.getId();
 	}
 
 	@Override
@@ -72,6 +77,13 @@ public class LinkServiceImpl implements LinkService {
 		int count = linkMapper.countValidPort(port);
 		if (count >= 1) {
 			return false;
+		} else {
+			try {
+				ServerSocket s = new ServerSocket(port);
+				s.close();
+			} catch (IOException e) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -104,6 +116,15 @@ public class LinkServiceImpl implements LinkService {
 		List<PluginInfo> extractors = protocolRegister
 				.getCustomizedExtractors();
 		return extractors;
+	}
+
+	private int distributeLocalPort() {
+		for (int i = 8001; i < 50000; i++) {
+			if (isPortAvailable(i)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }

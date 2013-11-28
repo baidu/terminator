@@ -18,14 +18,14 @@ import com.baidu.terminator.manager.common.log.LinkLogger;
 import com.baidu.terminator.plugin.signer.algorithm.MD5;
 import com.baidu.terminator.register.annotation.DefaultSigner;
 import com.baidu.terminator.server.common.util.ChannelUtil;
-import com.baidu.terminator.storage.RequestResponseBundle;
 
 @DefaultSigner(protocol = "HTTP", message = "对Http Header中的Version、Uri、Method以及整个Http Body拼接起来计算MD5值。")
-public class DefaultHttpSigner implements Signer {
+public class DefaultHttpSigner extends BaseSigner {
 
 	private Logger logger;
 
 	public DefaultHttpSigner(Link link) {
+		super(link);
 		logger = LinkLogger.getLogger(DefaultHttpSigner.class,
 				link.getId());
 	}
@@ -52,12 +52,6 @@ public class DefaultHttpSigner implements Signer {
 
 		MD5 md5 = new MD5();
 		return md5.getMD5ofStr(sb.toString());
-	}
-
-	@Override
-	public void logResponse(RequestResponseBundle bundle) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

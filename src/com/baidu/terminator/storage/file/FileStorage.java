@@ -27,6 +27,7 @@ import com.baidu.terminator.manager.bo.StubCondition;
 import com.baidu.terminator.manager.bo.StubData;
 import com.baidu.terminator.manager.common.Config;
 import com.baidu.terminator.manager.common.SpringInit;
+import com.baidu.terminator.manager.common.file.FileUtils;
 import com.baidu.terminator.manager.common.log.LinkLogger;
 import com.baidu.terminator.plugin.signer.Signer;
 import com.baidu.terminator.storage.RequestResponseBundle;
@@ -34,7 +35,6 @@ import com.baidu.terminator.storage.Storage;
 import com.baidu.terminator.storage.file.bo.DataIndex;
 import com.baidu.terminator.storage.file.mapper.DataIndexMapper;
 import com.baidu.terminator.storage.file.mapper.StubDataMapper;
-import com.baidu.terminator.storage.file.util.FileUtils;
 
 /**
  * @author xingpei
@@ -129,7 +129,7 @@ public class FileStorage implements Storage {
 	}
 
 	@Override
-	public void putRecordData(String key, RequestResponseBundle bundles) {
+	public synchronized void putRecordData(String key, RequestResponseBundle bundles) {
 		int linkId = this.link.getId();
 		File dataFile = new File(filePath);
 

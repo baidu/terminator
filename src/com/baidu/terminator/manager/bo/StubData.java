@@ -11,7 +11,12 @@ package com.baidu.terminator.manager.bo;
 import java.util.List;
 
 public class StubData {
-
+	public enum Operator {
+		and,
+		or,
+		not;
+	};
+	
 	private Integer id;
 
 	private Integer linkId;
@@ -19,6 +24,10 @@ public class StubData {
 	private List<StubCondition> conditions;
 
 	private int delay;
+	
+	private int sequence;
+
+	private Operator operator;
 
 	private String response;
 
@@ -52,6 +61,22 @@ public class StubData {
 
 	public void setDelay(int delay) {
 		this.delay = delay;
+	}
+
+	public int getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
+	}
+
+	public Operator getOperator() {
+		return operator;
+	}
+
+	public void setOperator(Operator operator) {
+		this.operator = operator;
 	}
 
 	public String getResponse() {

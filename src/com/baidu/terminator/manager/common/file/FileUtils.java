@@ -6,7 +6,7 @@
  *  published by the Free Software Foundation.
  *  
  */
-package com.baidu.terminator.storage.file.util;
+package com.baidu.terminator.manager.common.file;
 
 import java.io.File;
 import java.io.IOException;

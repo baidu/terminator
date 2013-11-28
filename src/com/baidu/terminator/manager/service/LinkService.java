@@ -22,7 +22,7 @@ public interface LinkService {
 
 	public List<Link> getLinkByName(String name);
 
-	public int addLink(Link link);
+	public void addLink(Link link);
 
 	public void modifyLink(Link link);
 

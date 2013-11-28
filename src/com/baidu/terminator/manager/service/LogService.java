@@ -8,9 +8,14 @@
  */
 package com.baidu.terminator.manager.service;
 
+import java.io.IOException;
+
+import com.baidu.terminator.manager.bo.Log;
 import com.baidu.terminator.manager.common.exception.LinkStatusException;
 
 public interface LogService {
+
+	public Log readLog(int linkId, long offset) throws IOException;
 
 	public void deleteLog(int linkId) throws LinkStatusException;
 

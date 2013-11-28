@@ -8,8 +8,6 @@
  */
 package com.baidu.terminator.manager.action;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.List;
 import java.util.Set;
 
@@ -79,10 +77,9 @@ public class LinkAction extends BaseAction {
 		link.setStorageType(linkForm.getStorageType());
 		link.setSignClass(linkForm.getSignClass());
 		link.setExtractClass(linkForm.getExtractClass());
-		int id = linkService.addLink(link);
+		linkService.addLink(link);
 
-		return new ResponseEntity(setLocationHeaders("/link/" + id),
-				HttpStatus.CREATED);
+		return new ResponseEntity(link, HttpStatus.CREATED);
 	}
 
 	/**
@@ -197,17 +194,7 @@ public class LinkAction extends BaseAction {
 	@ResponseBody
 	public ResponseEntity<Boolean> checkPort(@PathVariable int port) {
 		boolean isAvailable = linkService.isPortAvailable(port);
-		if (isAvailable) {
-			try {
-				ServerSocket s = new ServerSocket(port);
-				s.close();
-				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-			} catch (IOException e) {
-				return new ResponseEntity<Boolean>(false, HttpStatus.OK);
-			}
-		} else {
-			return new ResponseEntity<Boolean>(false, HttpStatus.OK);
-		}
+		return new ResponseEntity<Boolean>(isAvailable, HttpStatus.OK);
 	}
 
 }

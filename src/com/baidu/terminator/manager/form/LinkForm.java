@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.Range;
 
 import com.baidu.terminator.manager.bo.StorageType;
 import com.baidu.terminator.manager.bo.WorkMode;
-import com.baidu.terminator.manager.common.validation.IP;
 
 public class LinkForm {
 
@@ -25,7 +24,7 @@ public class LinkForm {
 	@Range(min = 1, message = "local port should be greater than zero!")
 	private int localPort;
 
-	@IP
+	@NotBlank(message = "remoteAddress should be not blank!")
 	private String remoteAddress;
 
 	@Range(min = 1, message = "remote port should be greater than zero!")

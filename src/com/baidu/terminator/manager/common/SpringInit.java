@@ -12,19 +12,28 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.baidu.terminator.manager.service.LinkControlService;
 
 public class SpringInit implements ServletContextListener {
 
-	private static WebApplicationContext context;
+	private static ApplicationContext context;
 
 	public void contextInitialized(ServletContextEvent event) {
 		context = WebApplicationContextUtils.getWebApplicationContext(event
 				.getServletContext());
+
+		LinkControlService linkControlService = (LinkControlService) context
+				.getBean("linkControlService");
+		linkControlService.recoveryLink();
 	}
 
 	public void contextDestroyed(ServletContextEvent event) {
+	}
+
+	public static void setApplicationContext(ApplicationContext testContext) {
+		context = testContext;
 	}
 
 	public static ApplicationContext getApplicationContext() {

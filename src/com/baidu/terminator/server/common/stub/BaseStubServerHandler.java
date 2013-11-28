@@ -8,6 +8,7 @@
  */
 package com.baidu.terminator.server.common.stub;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -18,22 +19,25 @@ import org.jboss.netty.channel.MessageEvent;
 
 import com.baidu.terminator.manager.bo.StubCondition;
 import com.baidu.terminator.manager.bo.StubData;
+import com.baidu.terminator.manager.bo.StubData.Operator;
 import com.baidu.terminator.manager.common.log.LinkLogger;
 import com.baidu.terminator.plugin.extractor.RequestElement;
 import com.baidu.terminator.plugin.matcher.AndRequestMatcher;
+import com.baidu.terminator.plugin.matcher.NotRequestMatcher;
+import com.baidu.terminator.plugin.matcher.OrRequestMatcher;
 import com.baidu.terminator.plugin.matcher.RequestMatcher;
 import com.baidu.terminator.server.NotHitHandler;
 import com.baidu.terminator.server.RelayListener;
 import com.baidu.terminator.server.ServerContext;
 import com.baidu.terminator.server.common.record.BaseRecordServerHandler;
+import com.baidu.terminator.server.common.util.StubMatcherComparator;
 
 public abstract class BaseStubServerHandler<Request> extends
 		BaseRecordServerHandler<Request> implements NotHitHandler {
 
 	private Logger logger;
-
-	private RequestMatcher matcher = new AndRequestMatcher();
-
+//	private Operator operator;
+	
 	private boolean farward = true;
 
 	public BaseStubServerHandler(ServerContext context) {
@@ -57,12 +61,24 @@ public abstract class BaseStubServerHandler<Request> extends
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e)
 			throws Exception {
+		System.out.println(e);
 		request = (Request) e.getMessage();
 		List<RequestElement> elements = extractor.extract(request);
 
 		Object response = null;
 		List<StubData> stubData = storage.getStubData();
+		StubMatcherComparator comp = new StubMatcherComparator();//排序确保优先级not>and>or
+		Collections.sort(stubData,comp);
 		for (StubData data : stubData) {
+			Operator operator = data.getOperator();
+			RequestMatcher matcher = null;
+			if(operator.equals(Operator.not)){
+				matcher = new NotRequestMatcher();
+			}else if(operator.equals(Operator.and)){
+				matcher= new AndRequestMatcher();
+			}else if (operator.equals(Operator.or)){
+				matcher = new OrRequestMatcher();
+			}
 			List<StubCondition> conditions = data.getConditions();
 			boolean isMatch = matcher.isMatch(conditions, elements);
 			if (isMatch) {
@@ -84,7 +100,7 @@ public abstract class BaseStubServerHandler<Request> extends
 			}
 		} else {
 			logger.info("the request hit the stub data, and response is: \n"
-					+ response);
+					+ response.toString());
 			inboundChannel.write(response);
 		}
 

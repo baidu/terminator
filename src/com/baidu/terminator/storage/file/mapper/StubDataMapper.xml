@@ -7,32 +7,31 @@
 		<result column="link_id" property="linkId" jdbcType="INTEGER" />
 		<result column="delay" property="delay" jdbcType="INTEGER" />
 		<result column="response" property="response" jdbcType="VARCHAR" />
-
-		<collection property="conditions" ofType="com.baidu.terminator.manager.bo.StubCondition">
+		<result column="sequence" property="sequence" jdbcType="INTEGER" />
+		<result column="operator" property="operator" jdbcType="VARCHAR" />
+		<collection property="conditions"
+			ofType="com.baidu.terminator.manager.bo.StubCondition">
 			<result column="stub_data_id" property="stubDataId" jdbcType="INTEGER" />
 			<result column="key" property="key" jdbcType="VARCHAR" />
 			<result column="value" property="value" jdbcType="VARCHAR" />
-			<result column="sequence" property="sequence" jdbcType="INTEGER" />
-			<result column="operator" property="operator" jdbcType="VARCHAR" />
 		</collection>
 	</resultMap>
 
 	<select id="selectStubData" resultMap="StubDataMap">
 		select A.id, A.link_id,
-		A.delay, A.response, B.stub_data_id, B.key, B.value, B.operator, B.sequence from
-		stub_data A, stub_condition B where link_id = #{linkId} and A.id =
-		B.stub_data_id
+		A.delay, A.response,A.sequence,A.operator, B.stub_data_id, B.key, B.value from stub_data A,
+		stub_condition B where link_id = #{linkId} and A.id =B.stub_data_id
 	</select>
 
 	<insert id="insertStubData" useGeneratedKeys="true" keyProperty="id">
-		insert into stub_data (link_id, delay, response) values (#{linkId},
-		#{delay}, #{response})
+		insert into stub_data (link_id, delay, response,operator,sequence)
+		values (#{linkId},#{delay}, #{response},#{operator},#{sequence})
 	</insert>
 
 	<insert id="insertStubCondition">
-		insert into stub_condition (stub_data_id, `key`, `value`,
-		operator, sequence) values (#{stubDataId}, #{key}, #{value},
-		#{operator}, #{sequence})
+		insert into stub_condition (stub_data_id,
+		`key`,`value`,operator, sequence) values (#{stubDataId}, #{key},
+		#{value},"and",0)
 	</insert>
 
 	<delete id="deleteStubData">

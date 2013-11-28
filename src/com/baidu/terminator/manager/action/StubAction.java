@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.baidu.terminator.manager.bo.StubCondition;
 import com.baidu.terminator.manager.bo.PluginInfo;
+import com.baidu.terminator.manager.bo.StubCondition;
 import com.baidu.terminator.manager.bo.StubData;
 import com.baidu.terminator.manager.form.StubForm;
 import com.baidu.terminator.manager.service.StubService;
@@ -42,9 +42,10 @@ public class StubAction extends BaseAction {
 	public ResponseEntity<List<StubData>> listStubData(@PathVariable int linkId) {
 		List<StubData> stubData = stubService.getStubData(linkId);
 		return new ResponseEntity<List<StubData>>(stubData, HttpStatus.OK);
+
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings( { "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{linkId}", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> addStubData(@PathVariable int linkId,
@@ -54,14 +55,13 @@ public class StubAction extends BaseAction {
 
 		StubData stubData = new StubData();
 		stubData.setConditions(conditions);
+		stubData.setOperator(stubForm.getOperator());
+		stubData.setSequence(stubForm.getSequence());
 		stubData.setResponse(response);
 		stubData.setDelay(stubForm.getDelay());
 
-		int id = stubService.addStubData(linkId, stubData);
-		StringBuilder uri = new StringBuilder(20);
-		uri.append("/stub/").append(linkId).append("/").append(id);
-		return new ResponseEntity(setLocationHeaders(uri.toString()),
-				HttpStatus.CREATED);
+		stubService.addStubData(linkId, stubData);
+		return new ResponseEntity(stubData, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "/{linkId}/{id}", method = RequestMethod.DELETE)

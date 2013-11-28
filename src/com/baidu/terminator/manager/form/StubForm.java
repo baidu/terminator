@@ -14,14 +14,22 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import com.baidu.terminator.manager.bo.StubCondition;
+import com.baidu.terminator.manager.bo.StubData.Operator;
 
-public class StubForm {
-
+public class StubForm implements Comparable<StubForm>{
+	
 	@Size(min = 1, message = "conditions size should greater than zero!")
 	private List<StubCondition> conditions = new ArrayList<StubCondition>();
 
 	private int delay;
+	
+	private Operator operator;
+	
+	private int sequence;
 
 	@NotNull(message = "response mode should be not null!")
 	private String response;
@@ -42,6 +50,22 @@ public class StubForm {
 		this.delay = delay;
 	}
 
+	public int getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
+	}
+
+	public Operator getOperator() {
+		return operator;
+	}
+
+	public void setOperator(Operator operator) {
+		this.operator = operator;
+	}
+
 	public String getResponse() {
 		return response;
 	}
@@ -49,5 +73,16 @@ public class StubForm {
 	public void setResponse(String response) {
 		this.response = response;
 	}
-
+	
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this,
+				ToStringStyle.MULTI_LINE_STYLE);
+	}
+	
+	@Override
+	public int compareTo(StubForm stubForm) {
+		int s = stubForm.getSequence();
+		return (this.sequence > s) ? 1 : ((this.sequence < s) ? -1 : 0);
+	}
 }
