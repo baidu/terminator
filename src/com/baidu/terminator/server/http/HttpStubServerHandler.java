@@ -41,7 +41,7 @@ public class HttpStubServerHandler extends BaseStubServerHandler<HttpRequest> {
 				HttpResponseStatus.OK);
 		response.setChunked(false);
 		response.setHeader("Content-Type", "text/html; charset=utf-8");
-		response.setHeader("Content-Length", content.length());
+		response.setHeader("Content-Length", content.getBytes().length);//解决中文按照1个字符计算问题
 		response.setContent(ChannelBuffers.copiedBuffer(content,
 				CharsetUtil.UTF_8));
 		return response;
