@@ -8,8 +8,11 @@
  */
 package com.baidu.terminator.manager.common;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.Inet4Address;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.Properties;
 
 public class Config {
@@ -35,11 +38,29 @@ public class Config {
 	public static String getLocalIp() {
 		if (localIp == null) {
 			try {
-				InetAddress addr = InetAddress.getLocalHost();
-				localIp = addr.getHostAddress().toString();
-			} catch (UnknownHostException e) {
+				for (Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) { 
+				    NetworkInterface item = e.nextElement(); 
+				    if (item.isLoopback() != true && item.isUp() == true && item.getMTU() > 0) {//不是循环网卡、网卡启用、传输单元大于0
+				    	for (InterfaceAddress address : item.getInterfaceAddresses()) { 
+					        if (address.getAddress() instanceof Inet4Address) { //IP4地址
+					            Inet4Address inet4Address = (Inet4Address) address.getAddress();
+					            if (!inet4Address.isLinkLocalAddress()) {//不为连接地址
+					            	return inet4Address.getHostAddress();
+								}
+					        } 
+					    } 
+					}
+				}
+			} catch (SocketException e) {
 				e.printStackTrace();
-			}
+			} 
+			
+//			try {
+//				InetAddress addr = InetAddress.getLocalHost();
+//				localIp = addr.getHostAddress().toString();
+//			} catch (UnknownHostException e) {
+//				e.printStackTrace();
+//			}
 		}
 		return localIp;
 	}
