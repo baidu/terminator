@@ -10,6 +10,8 @@ package com.baidu.terminator.server.http;
 
 import static org.jboss.netty.channel.Channels.pipeline;
 
+import java.io.UnsupportedEncodingException;
+
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -41,7 +43,13 @@ public class HttpStubServerHandler extends BaseStubServerHandler<HttpRequest> {
 				HttpResponseStatus.OK);
 		response.setChunked(false);
 		response.setHeader("Content-Type", "text/html; charset=utf-8");
-		response.setHeader("Content-Length", content.length());
+		int contentLenth = 0;
+		try {
+			contentLenth = content.getBytes("UTF-8").length;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		response.setHeader("Content-Length", contentLenth);//解决中文按照1个字符计算问题
 		response.setContent(ChannelBuffers.copiedBuffer(content,
 				CharsetUtil.UTF_8));
 		return response;
