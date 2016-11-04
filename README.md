@@ -1,61 +1,61 @@
-Terminator —— Service Virtualization
+Terminator - Service Virtualization
 ==========
 
-问题
+Issue
 ----------
-在开发/测试一个复杂系统的时候我们经常遇到开发/测试中的模块依赖其它服务的情况。比如一个系统有两个模块A和B，A模块依赖于B模块提供的服务：
+In the development / testing of a complex system, we often encounter when development / test in the case of other service module dependencies. For example, a system has two modules A and B, A B module depends on the service provided by the module:
 
-1. B部分功能还未完成开发导致A模块开发被阻塞；
+1. B part of the function has not yet completed the development of lead A module development is blocked;
 
-2. B模块有些数据不好构造，开发时无法自测到所有情况；
+2. B module and some bad data structure, you can not develop a self-test to all situations;
 
-3. 对A模块进行集成测试时，写了一些自动化用例。但由于B模块不可控，B模块的数据经常变动导致返回给A模块的数据也变化了，这时候依赖B模块返回数据的断言将失败；
+3. A module for integration testing, wrote some automation use cases. However, due to uncontrollable B module, the module data B lead to frequent changes back to the data A module is also changed, and this time the module returns data-dependent B assertion will fail;
 
-4. B模块不是自己团队维护，经常出现不稳定，导致开发环境中整个系统不稳定。
+4. B module is not their own maintenance team, often unstable, leading to the development environment of the whole system unstable.
 
-解决方案
+Solutions
 ----------
 
-		服务虚拟化指的就是虚拟出不稳定、不可用、未开发完全的服务。通常有两种方法：
+Service virtualization refers to an unstable virtual, unavailable, undeveloped full service. There are generally two methods:
 
-1. 针对协议的通用桩，可以预先设置请求对应的返回值以及匹配条件，这样系统未开发完之前可以使用这个桩来代替真实的服务；
+1. For common pile agreement can preset the request and returns the value of the corresponding matching conditions, so that the system can be used to replace the pile is not completed before the real service development;
 
-2. 录制回放方式，在第三方服务可用的时候将链路上的数据录制下来，当不稳定或者不可用时，回放当时录制的数据。
+2. Recording Playback mode, the third-party services are available when the data recorded on the link, when unstable or unavailable, then replay the recorded data.
 
-其中方案1主要针对问题一和二，方案2主要针对问题三和四。Terminator（寓意:明暗交界线）实现了以上两种方式。
+A major problem for which solutions I and II, the program focused on two issues three and four. Terminator (meaning: light and dark boundary line) to achieve the above two methods.
 
-		Terminator中每个链路可以看成是一个代理，运行在两个服务之间，现在支持四种工作模式：
+Terminator Each link can be viewed as a proxy that runs between the two services, now supports four modes of operation:
 
-![Function Summary](WebContent/resources/images/function-summary.jpg)
+! [Function Summary] (WebContent / resources / images / function-summary.jpg)
 
-TUNNEL：隧道模式，链路服务负责接收和转发链路上的数据，但不做任何存储，相当于通透状态;
+TUNNEL: Tunnel mode, link service is responsible for receiving and forwarding data link, but is not stored, the equivalent of transparent state;
 
-RECORD：录制模式，链路服务将链路上的请求和响应存储下来，并记录请求响应的对应关系;
+RECORD: Recording mode, link service requests and responses are stored on the link down, and the correspondence between the request to record responses;
 
-REPLAY：回放模式，链路服务不会连接后端的依赖服务，当请求过来时当符合某些条件时直接返回当时录制的响应;
+REPLAY: Playback mode, direct link service returns a response was recorded when not connected to the rear end of the dependent services, when the request came when certain conditions are met;
 
-STUB：通用桩模式，链路服务能够预设返回结果与匹配规则，当请求过来时符合匹配规则即返回预设结果。
+STUB: Universal pile mode, link services can return results with pre-match rule, when the request came in line with pre-match rules that return results.
 
-整体架构
+Overall architecture
 ----------
-![Terminator Architecture](WebContent/resources/images/intro/architecture.png)
+! [Terminator Architecture] (WebContent / resources / images / intro / architecture.png)
 
-1. 网络通信：主要在TCP层建立Socket收发链路上的通信数据，这里采用的是netty框架；
+1. Network Communications: Socket mainly establish communication data transceiver link in the TCP layer, here is netty framework;
 
-2. 协议编解码器：主要将二进制数据包解析为协议数据或者反过来将协议数据转化为二进制数据，netty本身提供了HTTP、SSL/TLS、WebSockets、Google Protocol Buffer的编解码器，如果需要扩展可以自己定义协议编解码器；
+2. Protocol codecs: main binary packet protocol data or resolve to turn the data into binary data protocol, netty itself provides HTTP, SSL / TLS, WebSockets, Google Protocol Buffer codecs, if the need to expand You can define your own protocol codec;
 
-3. 工作模式处理器：本系统的核心，现在提供的录制回放、通用桩都是这里实现的。这里提供了较多的扩展接口，可以基于定制化需求实现新的模式，比如当后端服务down掉的情况下启动之前的录制数据。另外对于录制回放模式，签名类是一个核心组件，它的作用是如何标识一个请求，对于不同系统可能有不一样的实现；对于通用桩模式，抽取类是一个核心组件，他的作用是如何提取一个请求，涉及到如何设置匹配条件，对于不同系统（特别是协议）也可能有不一样的实现。所以这些都是系统提供的可扩展接口。
+3. Work mode processor: core of the system, recording playback now offers universal piles are implemented here. Here offers more expansion interface, you can achieve a new model based on customized requirements, such as the case of the back-end service goes down before the start of the recorded data. In addition to recording the playback mode, the signature class is a core component of its role is to identify a request for different systems may have different implementations; for generic pile pattern extraction class is a core component of his role is how to extract a request related to how to set the matching conditions for different systems (especially the agreement) may also have a different implementation. So these are the systems provide scalable interface.
 
-4. APIs:为了使用上的方便（比如持续集成），系统基本所有的功能都通过REST API提供。 
+4. APIs: For convenience (such as continuous integration) of use, the system basically all functions are available through the REST API.
 
-配置与部署
+Configuration and Deployment
 ----------
-		将terminator/src/database/{version}/terminator.sql在MySQL数据库中执行，{version}为对应terminator.war的版本号；
-		修改terminator/src/conf/configuration.properties中数据库配置；
-		（可选操作）修改terminator/src/conf/configuration.properties中fileStorage.baseDir属性，这个是录制数据存放的位置，一般产生的数据较大，可以给定一个磁盘空间较大的位置。如果不填，默认情况window系统会存储在C:\temp，linux系统会存储在/tmp；
-		执行ant build.xml，terminator.war将生成在terminator目录下;
-		将terminator.war放入任何一个servlet容器(比如tomcat)后启动，访问http://IP:Port/terminator。
+The terminator / src / database / {version} /terminator.sql executed in the MySQL database, {version} terminator.war corresponding version number;
+Modified terminator / src / conf / configuration.properties database configuration;
+(Optional) Modify the terminator / src / conf / configuration.properties in fileStorage.baseDir property, this is the recorded data storage location, data is generally produced larger disk space can be given a larger location. If you do not fill, default window system will be stored in the C: \ temp, linux system will be stored in the / tmp;
+Execute ant build.xml, terminator.war will generate a directory in the terminator;
+The terminator.war into any servlet container (eg tomcat) After starting, visit http: // IP: Port / terminator.
 
-使用手册和开发指南
+Manual and Development Guide
 ----------
-部署成功后，可以访问“用户手册”和“开发指南”
+After the deployment is successful, you can access the "User's Guide" and the "Developer's Guide"
